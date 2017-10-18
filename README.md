@@ -60,7 +60,7 @@ asbundle(sourceFileName);
 
 ### Constrains
 
-  * same constrains of _ascjs_
+  * same constrains of [ascjs](https://github.com/WebReflection/ascjs#constrains)
   * Node core modules are not brought to the bundle, if a module cannot be resolved as file name it throws
 
 ### Example
@@ -117,4 +117,5 @@ Object.defineProperty(exports, '__esModule', {value: true}).default = function (
 ```
 
 The main module is returned and executed as default entry so it becomes easy to publish as global variable for Web purposes too.
+
 Add a `const myModule = ` prefix to the bundled code and use it right away.
