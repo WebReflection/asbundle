@@ -4,7 +4,9 @@
   "description": "A simple CommonJS bundler",
   "bin": "bin.js",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "node bin.js ./test.js && echo \"\n\n$(tput bold)OK$(tput sgr0)\n\""
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/WebReflection/asbundle.git"
