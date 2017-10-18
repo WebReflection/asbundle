@@ -2,7 +2,7 @@
 
 [![donate](https://img.shields.io/badge/$-donate-ff69b4.svg?maxAge=2592000&style=flat)](https://github.com/WebReflection/donate) [![License: ISC](https://img.shields.io/badge/License-ISC-yellow.svg)](https://opensource.org/licenses/ISC) [![Build Status](https://travis-ci.org/WebReflection/asbundle.svg?branch=master)](https://travis-ci.org/WebReflection/asbundle) [![Greenkeeper badge](https://badges.greenkeeper.io/WebReflection/asbundle.svg)](https://greenkeeper.io/)
 
-A simple CommonJS bundler
+A minimalistic CommonJS bundler
 
 - - -
 
@@ -10,6 +10,19 @@ This module is a perfect [ascjs](https://github.com/WebReflection/ascjs) compani
 
 Passing a single source file as path name, it will produce a lightweight, optimized, and minifier friendly bundle,
 to consume right away without needing global `require` or runtime discovered CommonJS dependencies.
+
+#### Goals
+  * be as simple as possible, but not simpler
+  * make creation of small modules written in ESM a no brainer
+  * enable `.js` files as ESM everywhere, following a simple folder convention
+  * produce files compatible with most common bundlers and tools (Babel, Webpack, UglifyJS, etc)
+
+**Example** of a basic module based on _ascjs_ and _asbundle_.
+![module structure](./module-structure.png)
+
+#### Non-Goals
+  * replace Babel, Webpack, Rollup, or any other tool. Let them do complicated things when needed
+  * transpile anything else than ESM import/export declarations
 
 ## How to
 

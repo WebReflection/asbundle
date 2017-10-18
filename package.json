@@ -1,7 +1,7 @@
 {
   "name": "asbundle",
   "version": "0.1.4",
-  "description": "A simple CommonJS bundler",
+  "description": "A minimalistic CommonJS bundler",
   "bin": "bin.js",
   "main": "index.js",
   "scripts": {
@@ -12,6 +12,7 @@
     "url": "git+https://github.com/WebReflection/asbundle.git"
   },
   "keywords": [
+    "esm",
     "cjs",
     "commonjs",
     "browserify",
@@ -19,7 +20,8 @@
     "bundler",
     "simple",
     "basic",
-    "browsers"
+    "browsers",
+    "minimalistic"
   ],
   "author": "Andrea Giammarchi",
   "license": "ISC",
