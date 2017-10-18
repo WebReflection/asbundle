@@ -1,0 +1,31 @@
+{
+  "name": "asbundle",
+  "version": "0.0.0",
+  "description": "A simple CommonJS bundler",
+  "bin": "bin.js",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WebReflection/asbundle.git"
+  },
+  "keywords": [
+    "cjs",
+    "commonjs",
+    "browserify",
+    "alternative",
+    "bundler",
+    "simple",
+    "basic",
+    "browsers"
+  ],
+  "author": "Andrea Giammarchi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WebReflection/asbundle/issues"
+  },
+  "homepage": "https://github.com/WebReflection/asbundle#readme",
+  "dependencies": {
+    "cherow": "^0.9.1"
+  }
+}
