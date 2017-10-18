@@ -18,7 +18,8 @@ to consume right away without needing global `require` or runtime discovered Com
   * produce files compatible with most common bundlers and tools (Babel, Webpack, UglifyJS, etc)
 
 **Example** of a basic module based on _ascjs_ and _asbundle_.
-![module structure](./module-structure.png?s=307)
+
+<img src="https://github.com/WebReflection/asbundle/raw/master/module-structure.png" width="307">
 
 ### Non-Goals
   * replace Babel, Webpack, Rollup, or any other tool. Let them do complicated things when needed
