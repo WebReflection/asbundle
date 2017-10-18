@@ -11,16 +11,16 @@ This module is a perfect [ascjs](https://github.com/WebReflection/ascjs) compani
 Passing a single source file as path name, it will produce a lightweight, optimized, and minifier friendly bundle,
 to consume right away without needing global `require` or runtime discovered CommonJS dependencies.
 
-#### Goals
+### Goals
   * be as simple as possible, but not simpler
   * make creation of small modules written in ESM a no brainer
   * enable `.js` files as ESM everywhere, following a simple folder convention
   * produce files compatible with most common bundlers and tools (Babel, Webpack, UglifyJS, etc)
 
 **Example** of a basic module based on _ascjs_ and _asbundle_.
-![module structure](./module-structure.png)
+![module structure](./module-structure.png?s=307)
 
-#### Non-Goals
+### Non-Goals
   * replace Babel, Webpack, Rollup, or any other tool. Let them do complicated things when needed
   * transpile anything else than ESM import/export declarations
 
