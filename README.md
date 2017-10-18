@@ -1,6 +1,6 @@
 # asbundle
 
-[![License: ISC](https://img.shields.io/badge/License-ISC-yellow.svg)](https://opensource.org/licenses/ISC) [![Build Status](https://travis-ci.org/WebReflection/asbundle.svg?branch=master)](https://travis-ci.org/WebReflection/asbundle) [![donate](https://img.shields.io/badge/$-donate-ff69b4.svg?maxAge=2592000&style=flat)](https://github.com/WebReflection/donate) [![Greenkeeper badge](https://badges.greenkeeper.io/WebReflection/asbundle.svg)](https://greenkeeper.io/)
+[![donate](https://img.shields.io/badge/$-donate-ff69b4.svg?maxAge=2592000&style=flat)](https://github.com/WebReflection/donate) [![License: ISC](https://img.shields.io/badge/License-ISC-yellow.svg)](https://opensource.org/licenses/ISC) [![Build Status](https://travis-ci.org/WebReflection/asbundle.svg?branch=master)](https://travis-ci.org/WebReflection/asbundle) [![Greenkeeper badge](https://badges.greenkeeper.io/WebReflection/asbundle.svg)](https://greenkeeper.io/)
 
 A simple CommonJS bundler
 
