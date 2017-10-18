@@ -68,7 +68,7 @@ export default function () {
 ```
 into the following bundle:
 ```js
-// out.js => 261 bytes compressed & gzipped
+// out.js => 261 bytes minified & gzipped
 ((cache, modules) => {
   const require = i => cache[i] || get(i);
   const get = i => {
