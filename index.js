@@ -13,21 +13,20 @@ const bundle = (main) => {
   const modules = [];
   modules[0] = parse(base, main, cache, modules);
   return `
-((cache, modules) => {
-  const require = i => cache[i] || get(i);
-  const get = i => {
-    const exports = {};
-    const module = {exports};
+(function (cache, modules) {
+  function require(i) { return cache[i] || get(i); }
+  function get(i) {
+    var exports = {}, module = {exports: exports};
     modules[i].call(exports, window, require, module, exports);
     return (cache[i] = module.exports);
-  };
-  const main = require(0);
+  }
+  var main = require(0);
   return main.__esModule ? main.default : main;
-})([],[${modules.map((code, i) => `function (global, require, module, exports) {
+}([],[${modules.map((code, i) => `function (global, require, module, exports) {
 // ${path.relative(base, cache[i])}
 ${code}
 }
-`.trim()).join(',')}]);
+`.trim()).join(',')}]));
   `.trim();
 };
 

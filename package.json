@@ -5,7 +5,7 @@
   "bin": "bin.js",
   "main": "index.js",
   "scripts": {
-    "test": "node bin.js ./test.js && echo \"\n\n$(tput bold)OK$(tput sgr0)\n\""
+    "test": "if [ \"$(node bin.js test/main.js)\" != \"$(cat test/out.js)\" ]; then exit 1; fi"
   },
   "repository": {
     "type": "git",

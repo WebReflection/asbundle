@@ -82,19 +82,18 @@ export default function () {
 ```
 into the following bundle:
 ```js
-// out.js => 261 bytes minified & gzipped
-((cache, modules) => {
-  const require = i => cache[i] || get(i);
-  const get = i => {
-    const exports = {};
-    const module = {exports};
+// out.js => 266 bytes minified & gzipped
+(function (cache, modules) {
+  function require(i) { return cache[i] || get(i); }
+  function get(i) {
+    var exports = {}, module = {exports: exports};
     modules[i].call(exports, window, require, module, exports);
     return (cache[i] = module.exports);
-  };
-  const main = require(0);
+  }
+  var main = require(0);
   return main.__esModule ? main.default : main;
-})([],[function (global, require, module, exports) {
-// test.js
+}([],[function (global, require, module, exports) {
+// main.js
 'use strict';
 const func = (m => m.__esModule ? m.default : m)(require(1));
 const {a, b} = require(1);
@@ -114,7 +113,7 @@ exports.b = b;
 Object.defineProperty(exports, '__esModule', {value: true}).default = function () {
   console.log('module');
 };
-}]);
+}]));
 ```
 
 The main module is returned and executed as default entry so it becomes easy to publish as global variable for Web purposes too.
