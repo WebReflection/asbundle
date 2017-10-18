@@ -8,7 +8,7 @@ A minimalistic CommonJS bundler
 
 This module is a perfect [ascjs](https://github.com/WebReflection/ascjs) companion to create CommonJS bundles.
 
-Passing a single source file as path name, it will produce a lightweight, optimized, and minifier friendly bundle,
+Passing a single ESM/CJS source file as path name, it will produce a lightweight, optimized, and minifier friendly bundle,
 to consume right away without needing global `require` or runtime discovered CommonJS dependencies.
 
 ### Goals
