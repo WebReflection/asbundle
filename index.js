@@ -44,7 +44,7 @@ const parse = (base, file, cache, modules) => {
       value: i < 0 ? (cache.push(name) - 1) : i
     });
     if (i < 0) {
-      modules[cache.indexOf(name)] = parse(path.dirname(name), name, cache, modules);
+      modules[cache.length - 1] = parse(path.dirname(name), name, cache, modules);
     }
   };
   const findRequire = item => {
@@ -75,14 +75,15 @@ const parse = (base, file, cache, modules) => {
   };
   cherow.parseModule(code, bundle.options).body.forEach(findRequire);
   const length = chunks.length;
-  for (let c = 0, i = 0; i < length; i++) {
+  let c = 0;
+  for (let i = 0; i < length; i++) {
     out.push(
       code.slice(c, chunks[i].start),
       chunks[i].value
     );
     c = chunks[i].end;
   }
-  out.push(length ? code.slice(chunks[length - 1].end) : code);
+  out.push(length ? code.slice(c) : code);
   return out.join('');
 };
 
