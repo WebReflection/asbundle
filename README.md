@@ -25,8 +25,8 @@ asbundle --help
 
 As executable, you can use _asbundle_ to output, or save, a bundle entry point.
 ```sh
-asbundle sourceFileName
-asbundle sourceFileName bundleFileName
+asbundle source-file.js           // writes bundle contents to STDOUT
+asbundle source-file.js bundle.js // outputs to bundle.js
 ```
 
 As module, you can require it and use it to obtain a bundle string.
