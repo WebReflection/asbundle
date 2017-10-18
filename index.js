@@ -35,7 +35,7 @@ const parse = (base, file, cache, modules) => {
   const out = [];
   const chunks = [];
   let code = fs.readFileSync(file).toString();
-  if (/^(?:import|export)\s+/.test(code)) code = ascjs(code);
+  if (/^(?:import|export)\s+/m.test(code)) code = ascjs(code);
   const addChunk = (module, name) => {
     const i = cache.indexOf(name);
     chunks.push({
