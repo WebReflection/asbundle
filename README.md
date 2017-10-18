@@ -1,5 +1,7 @@
 # asbundle
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/WebReflection/asbundle.svg)](https://greenkeeper.io/)
+
 [![License: ISC](https://img.shields.io/badge/License-ISC-yellow.svg)](https://opensource.org/licenses/ISC) [![donate](https://img.shields.io/badge/$-donate-ff69b4.svg?maxAge=2592000&style=flat)](https://github.com/WebReflection/donate)
 
 A simple CommonJS bundler
