@@ -1,3 +1,4 @@
+const ascjs = require('ascjs');
 const cherow = require('cherow');
 
 const execSync = require('child_process').execSync;
@@ -33,7 +34,8 @@ ${code}
 const parse = (base, file, cache, modules) => {
   const out = [];
   const chunks = [];
-  const code = fs.readFileSync(file).toString();
+  let code = fs.readFileSync(file).toString();
+  if (/^(?:import|export)\s+/.test(code)) code = ascjs(code);
   const addChunk = (module, name) => {
     const i = cache.indexOf(name);
     chunks.push({

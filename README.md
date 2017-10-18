@@ -38,47 +38,67 @@ asbundle(sourceFileName);
 
 ### Features
 
-  * extremely lightweight, based on [cherow](https://github.com/cherow/cherow) for performance and reliability, it transforms only imports/exports ignoring everything else
-  * produces modern JavaScript, you are in charge of extra transformations if needed
-  * indentation, spaces, semi or no-semi are preserved: beautiful source code remains beautiful
-  * uses same [Babel](http://babeljs.io) convention, resolving `export default ...` intent as `exports.default`
-  * you can finally write `.js` code and transform it for Node only before publishing on _npm_
-  * you could write `.mjs` modules and transform them into CommonJS for [Browserify](http://browserify.org) or other bundlers as target
+  * extremely lightweight, based on [cherow](https://github.com/cherow/cherow) for performance and reliability, it transforms only `require(...)` calls to create a bundled output
+  * understands both relative files and installed packages too (based on `require.resolve(...)`)
+  * reproduces a modern and minimalistic CommonJS environments ideal for browsers
+  * compatible with [Babel](http://babeljs.io) `__esModule` and `.default` convention
 
 ### Constrains
 
-  * live bindings for exported values are not preserved. You need to delegate in scope eventual changes
-  * dynamic `import(...)` is untouched. If you write that, let [Webpack](https://webpack.js.org) handle it for you later on
-  * there is no magic whatsoever in module names resolution, what you write in ESM is what you get as CJS
+  * Node core modules are not brought to the bundle
 
 ### Example
-This module can transform the following ES2015+ code
+This module can transform the following code
 ```js
+// main.js
 import func, {a, b} from './module.js';
-import * as tmp from 'other';
-
 const val = 123;
-
 export default function test() {
   console.log('asbundle');
 };
-
 export {func, val};
+
+// module.js
+export const a = 1, b = 2;
+export default function () {
+  console.log('module');
+};
 ```
-into the following one:
+into the following bundle:
 ```js
+((cache, modules) => {
+  const require = i => cache[i] || get(i);
+  const get = i => {
+    const exports = {};
+    const module = {exports};
+    modules[i].call(exports, window, require, module, exports);
+    return (cache[i] = module.exports);
+  };
+  const main = require(0);
+  return main.__esModule ? main.default : main;
+})([],[function (global, require, module, exports) {
+// test.js
 'use strict';
-const func = (m => m.__esModule ? m.default : m)(require('./module.js'));
-const {a, b} = require('./module.js');
-const tmp = require('other');
-
+const func = (m => m.__esModule ? m.default : m)(require(1));
+const {a, b} = require(1);
 const val = 123;
-
 function test() {
   console.log('asbundle');
 }
 Object.defineProperty(exports, '__esModule', {value: true}).default = test;
-
 exports.func = func;
 exports.val = val;
+},function (global, require, module, exports) {
+// module.js
+'use strict';
+const a = 1, b = 2;
+exports.a = a;
+exports.b = b;
+Object.defineProperty(exports, '__esModule', {value: true}).default = function () {
+  console.log('module');
+};
+}]);
 ```
+
+The main module is returned and executed as default entry so it becomes easy to publish as global variable for Web purposes too.
+Add a `const myModule = ` prefix to the bundled code and use it right away.
