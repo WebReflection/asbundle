@@ -38,17 +38,19 @@ asbundle(sourceFileName);
 
 ### Features
 
-  * extremely lightweight, based on [cherow](https://github.com/cherow/cherow) for performance and reliability, it transforms only `require(...)` calls to create a bundled output
+  * extremely lightweight, based on [cherow](https://github.com/cherow/cherow) for performance and reliability
+  * it uses _ascjs_ to automatically transform, when needed, ES2015+ modules into CommonJS code
   * understands both relative files and installed packages too (based on `require.resolve(...)`)
   * reproduces a modern and minimalistic CommonJS environments ideal for browsers
   * compatible with [Babel](http://babeljs.io) `__esModule` and `.default` convention
 
 ### Constrains
 
-  * Node core modules are not brought to the bundle
+  * same constrains of _ascjs_
+  * Node core modules are not brought to the bundle, if a module cannot be resolved as file name it throws
 
 ### Example
-This module can transform the following code
+This module can transform `main.js` entry file via `asbundle main.js out.js`:
 ```js
 // main.js
 import func, {a, b} from './module.js';
@@ -66,6 +68,7 @@ export default function () {
 ```
 into the following bundle:
 ```js
+// out.js => 261 bytes compressed & gzipped
 ((cache, modules) => {
   const require = i => cache[i] || get(i);
   const get = i => {
