@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/WebReflection/asbundle#readme",
   "dependencies": {
-    "ascjs": "0.1.8",
+    "ascjs": "0.1.9",
     "cherow": "0.9.9"
   }
 }
