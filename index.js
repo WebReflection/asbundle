@@ -1,17 +1,33 @@
 const ascjs = require('ascjs');
-const cherow = require('cherow');
+const esprima = require('esprima');
+const defaultOptions = {
+  sourceType: 'module',
+  jsx: true,
+  range: true,
+  tolerant: true
+};
 
 const execSync = require('child_process').execSync;
 const fs = require('fs');
 const path = require('path');
 
-const bundle = (main) => {
+const bundle = (main, options) => {
   let base = path.dirname(main);
   main = path.resolve(base, main);
   base = path.dirname(main);
   const cache = [main];
   const modules = [];
-  modules[0] = parse(base, main, cache, modules);
+  modules[0] = parse(
+    Object.assign(
+      {},
+      defaultOptions,
+      options
+    ),
+    base,
+    main,
+    cache,
+    modules
+  );
   return `
 (function (cache, modules) {
   function require(i) { return cache[i] || get(i); }
@@ -30,7 +46,7 @@ ${code}
   `.trim();
 };
 
-const parse = (base, file, cache, modules) => {
+const parse = (options, base, file, cache, modules) => {
   const out = [];
   const chunks = [];
   let code = fs.readFileSync(file).toString();
@@ -38,41 +54,38 @@ const parse = (base, file, cache, modules) => {
   const addChunk = (module, name) => {
     const i = cache.indexOf(name);
     chunks.push({
-      start: module.start,
-      end: module.end,
+      start: module.range[0],
+      end: module.range[1],
       value: i < 0 ? (cache.push(name) - 1) : i
     });
     if (i < 0) {
-      modules[cache.length - 1] = parse(path.dirname(name), name, cache, modules);
+      modules[cache.length - 1] = parse(options, path.dirname(name), name, cache, modules);
     }
   };
-  const findRequire = item => {
-    if (item.type === 'CallExpression' && item.callee.name === 'require') {
-      const module = item.arguments[0];
-      if (/^[./]/.test(module.value)) {
-        let name = path.resolve(base, module.value);
-        addChunk(module, /\.js$/.test(name) ? name : (name + '.js'));
-      } else {
-        let name = execSync(
-          `node -e 'console.log(require.resolve(${
-            JSON.stringify(module.value)
-          }))'`,
-          {cwd: base}
-        ).toString().trim();
-        if (name === module.value) {
-          throw `unable to find "${name}" via file://${file}\n`;
-        }
-        addChunk(module, name);
-      }
-    } else {
-      for (let key in item) {
-        if (typeof item[key] === 'object') {
-          findRequire(item[key] || {});
+  esprima.parse(
+    code,
+    options,
+    item => {
+      if (item.type === 'CallExpression' && item.callee.name === 'require') {
+        const module = item.arguments[0];
+        if (/^[./]/.test(module.value)) {
+          let name = path.resolve(base, module.value);
+          addChunk(module, /\.js$/.test(name) ? name : (name + '.js'));
+        } else {
+          let name = execSync(
+            `node -e 'console.log(require.resolve(${
+              JSON.stringify(module.value)
+            }))'`,
+            {cwd: base}
+          ).toString().trim();
+          if (name === module.value) {
+            throw `unable to find "${name}" via file://${file}\n`;
+          }
+          addChunk(module, name);
         }
       }
     }
-  };
-  cherow.parseModule(code, bundle.options).body.forEach(findRequire);
+  );
   const length = chunks.length;
   let c = 0;
   for (let i = 0; i < length; i++) {
@@ -84,13 +97,6 @@ const parse = (base, file, cache, modules) => {
   }
   out.push(length ? code.slice(c) : code);
   return out.join('');
-};
-
-bundle.options = {
-  jsx: true,
-  next: true,
-  ranges: true,
-  v8: true
 };
 
 module.exports = bundle;

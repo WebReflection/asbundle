@@ -52,7 +52,7 @@ asbundle(sourceFileName);
 
 ### Features
 
-  * extremely lightweight, based on [cherow](https://github.com/cherow/cherow) for performance and reliability
+  * extremely lightweight, based on [esprima](http://esprima.org) for performance and reliability
   * it uses _ascjs_ to automatically transform, when needed, ES2015+ modules into CommonJS code
   * understands both relative files and installed packages too (based on `require.resolve(...)`)
   * reproduces a modern and minimalistic CommonJS environments ideal for browsers

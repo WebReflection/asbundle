@@ -1,6 +1,6 @@
 {
   "name": "asbundle",
-  "version": "0.2.1",
+  "version": "1.0.1",
   "description": "A minimalistic CommonJS bundler",
   "bin": "bin.js",
   "main": "index.js",
@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/WebReflection/asbundle#readme",
   "dependencies": {
-    "ascjs": "0.1.9",
-    "cherow": "0.9.9"
+    "ascjs": "1.0.1",
+    "esprima": "^4.0.0"
   }
 }
