@@ -72,12 +72,8 @@ const parse = (options, base, file, cache, modules) => {
           let name = path.resolve(base, module.value);
           addChunk(module, /\.js$/.test(name) ? name : (name + '.js'));
         } else {
-          let name = execSync(
-            `node -e 'console.log(require.resolve(${
-              JSON.stringify(module.value)
-            }))'`,
-            {cwd: base}
-          ).toString().trim();
+          process.chdir(base);
+          let name = require.resolve(module.value);
           if (name === module.value) {
             throw `unable to find "${name}" via file://${file}\n`;
           }
