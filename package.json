@@ -1,6 +1,6 @@
 {
   "name": "asbundle",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A minimalistic CommonJS bundler",
   "bin": "bin.js",
   "main": "index.js",
