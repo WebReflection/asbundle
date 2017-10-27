@@ -68,14 +68,18 @@ const parse = (options, base, file, cache, modules) => {
       if (item.type === 'CallExpression' && item.callee.name === 'require') {
         const module = item.arguments[0];
         if (/^[./]/.test(module.value)) {
-          let name = path.resolve(base, module.value);
-          addChunk(module, /\.js$/.test(name) ? name : (name + '.js'));
+          const name = require.resolve(path.resolve(base, module.value));
+          if (/\.m?js$/.test(name)) addChunk(module, name);
+          else {
+            if (cache.indexOf(name) < 0) cache.push(name);
+            addChunk(module, name);
+            modules[cache.indexOf(name)] = `module.exports = ${JSON.stringify(require(name))};`;
+          }
         } else {
           process.chdir(base);
-          let name = require.resolve(module.value);
-          if (name === module.value) {
+          const name = require.resolve(module.value);
+          if (name === module.value)
             throw `unable to find "${name}" via file://${file}\n`;
-          }
           addChunk(module, name);
         }
       }
