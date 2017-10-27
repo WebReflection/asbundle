@@ -71,9 +71,12 @@ const parse = (options, base, file, cache, modules) => {
           const name = require.resolve(path.resolve(base, module.value));
           if (/\.m?js$/.test(name)) addChunk(module, name);
           else {
-            if (cache.indexOf(name) < 0) cache.push(name);
+            const i = cache.indexOf(name);
+            if (i < 0) cache.push(name);
             addChunk(module, name);
-            modules[cache.indexOf(name)] = `module.exports = ${JSON.stringify(require(name))};`;
+            if (i < 0) {
+              modules[cache.length - 1] = `module.exports = ${JSON.stringify(require(name))};`;
+            }
           }
         } else {
           process.chdir(base);
