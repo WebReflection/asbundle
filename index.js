@@ -1,10 +1,33 @@
 const ascjs = require('ascjs');
-const esprima = require('esprima');
+const parser = require('babylon');
 const defaultOptions = {
   sourceType: 'module',
-  jsx: true,
-  range: true,
-  tolerant: true
+  plugins: [
+    'estree',
+    'jsx',
+    'flow',
+    'typescript',
+    'doExpressions',
+    'objectRestSpread',
+    'decorators',
+    'decorators2',
+    'classProperties',
+    'classPrivateProperties',
+    'classPrivateMethods',
+    'exportExtensions',
+    'asyncGenerators',
+    'functionBind',
+    'functionSent',
+    'dynamicImport',
+    'numericSeparator',
+    'optionalChaining',
+    'importMeta',
+    'bigInt',
+    'optionalCatchBinding',
+    'throwExpressions',
+    'pipelineOperator',
+    'nullishCoalescingOperator'
+  ]
 };
 
 const fs = require('fs');
@@ -53,41 +76,45 @@ const parse = (options, base, file, cache, modules) => {
   const addChunk = (module, name) => {
     const i = cache.indexOf(name);
     chunks.push({
-      start: module.range[0],
-      end: module.range[1],
+      start: module.start,
+      end: module.end,
       value: i < 0 ? (cache.push(name) - 1) : i
     });
     if (i < 0) {
       modules[cache.length - 1] = parse(options, path.dirname(name), name, cache, modules);
     }
   };
-  esprima.parse(
-    code,
-    options,
-    item => {
-      if (item.type === 'CallExpression' && item.callee.name === 'require') {
-        const module = item.arguments[0];
-        if (/^[./]/.test(module.value)) {
-          const name = require.resolve(path.resolve(base, module.value));
-          if (/\.m?js$/.test(name)) addChunk(module, name);
-          else {
-            const i = cache.indexOf(name);
-            if (i < 0) cache.push(name);
-            addChunk(module, name);
-            if (i < 0) {
-              modules[cache.length - 1] = `module.exports = ${JSON.stringify(require(name))};`;
-            }
-          }
-        } else {
-          process.chdir(base);
-          const name = require.resolve(name);
-          if (name === module.value)
-            throw `unable to find "${name}" via file://${file}\n`;
+  const findRequire = item => {
+    if (item.type === 'CallExpression' && item.callee.name === 'require') {
+      const module = item.arguments[0];
+      if (/^[./]/.test(module.value)) {
+        const name = require.resolve(path.resolve(base, module.value));
+        if (/\.m?js$/.test(name)) addChunk(module, name);
+        else {
+          const i = cache.indexOf(name);
+          if (i < 0) cache.push(name);
           addChunk(module, name);
+          if (i < 0) {
+            modules[cache.length - 1] = `module.exports = ${JSON.stringify(require(name))};`;
+          }
+        }
+      } else {
+        process.chdir(base);
+        const name = require.resolve(name);
+        if (name === module.value)
+          throw `unable to find "${name}" via file://${file}\n`;
+        addChunk(module, name);
+      }
+    } else {
+      for (let key in item) {
+        if (typeof item[key] === 'object') {
+          findRequire(item[key] || {});
         }
       }
     }
-  );
+  };
+  const parsed = parser.parse(code, options);
+  parsed.program.body.forEach(findRequire);
   const length = chunks.length;
   let c = 0;
   for (let i = 0; i < length; i++) {
