@@ -79,10 +79,8 @@ const parse = (options, base, file, cache, modules) => {
             }
           }
         } else {
-          let name = module.value;
-          if (/^https?:\/\/(?:unpkg\.com|registry\.npmjs\.org)\/([^@/]+)/.test(name)) name = RegExp.$1;
           process.chdir(base);
-          name = require.resolve(name);
+          const name = require.resolve(name);
           if (name === module.value)
             throw `unable to find "${name}" via file://${file}\n`;
           addChunk(module, name);
