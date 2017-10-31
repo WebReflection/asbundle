@@ -100,7 +100,7 @@ const parse = (options, base, file, cache, modules) => {
         }
       } else {
         process.chdir(base);
-        const name = require.resolve(name);
+        const name = require.resolve(module.value);
         if (name === module.value)
           throw `unable to find "${name}" via file://${file}\n`;
         addChunk(module, name);
