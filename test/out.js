@@ -5,18 +5,19 @@
     modules[i].call(exports, window, require, module, exports);
     return (cache[i] = module.exports);
   }
-  var main = require(0);
-  return main.__esModule ? main.default : main;
+  require.E = exports => Object.defineProperty(exports, '__esModule', {value: true});
+  require.I = m => m.__esModule ? m.default : m;
+  return require.I(require(0));
 }([],[function (global, require, module, exports) {
 // main.js
 'use strict';
-const func = (m => m.__esModule ? m.default : m)(require(1));
+const func = require.I(require(1));
 const {a, b} = require(1);
 const val = 123;
 function test() {
   console.log('asbundle');
 }
-Object.defineProperty(exports, '__esModule', {value: true}).default = test;
+require.E(exports).default = test;
 exports.func = func;
 exports.val = val;
 },function (global, require, module, exports) {
@@ -25,7 +26,7 @@ exports.val = val;
 const a = 1, b = 2;
 exports.a = a;
 exports.b = b;
-Object.defineProperty(exports, '__esModule', {value: true}).default = function () {
+require.E(exports).default = function () {
   console.log('module');
 };
 }]));

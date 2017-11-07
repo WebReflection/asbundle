@@ -32,7 +32,8 @@ const defaultOptions = {
 
 const fs = require('fs');
 const path = require('path');
-
+const IMPORT = 'require.I';
+const EXPORT = 'require.E(exports)';
 const bundle = (main, options) => {
   let base = path.dirname(main);
   main = path.resolve(base, main);
@@ -50,7 +51,7 @@ const bundle = (main, options) => {
     cache,
     modules
   );
-  return `
+  let output = `
 (function (cache, modules) {
   function require(i) { return cache[i] || get(i); }
   function get(i) {
@@ -66,13 +67,29 @@ ${code}
 }
 `.trim()).join(',')}]));
   `.trim();
+  if (output.includes('require.E(exports)')) {
+    output = output.replace(
+      'var main =',
+      'require.E = exports => Object.defineProperty(exports, \'__esModule\', {value: true});\n  var main ='
+    );
+  }
+  if (output.includes(IMPORT)) {
+    output = output.replace(
+      'var main =',
+      IMPORT + ' = m => m.__esModule ? m.default : m;\n  var main ='
+    ).replace(
+      'var main = require(0);\n  return main.__esModule ? main.default : main;',
+      'return require.I(require(0));'
+    );
+  }
+  return output;
 };
 
 const parse = (options, base, file, cache, modules) => {
   const out = [];
   const chunks = [];
   let code = fs.readFileSync(file).toString();
-  if (/^(?:import|export)\s+/m.test(code)) code = ascjs(code);
+  if (/^(?:import|export)\s+/m.test(code)) code = ascjs(code, {IMPORT, EXPORT});
   const addChunk = (module, name) => {
     const i = cache.indexOf(name);
     chunks.push({
