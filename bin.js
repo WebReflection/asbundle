@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
 const asbundle = require('./index.js');
+const argv = process.argv.filter(arg => !/^-/.test(arg));
 
-let source = process.argv[2];
+let source = argv[2];
 if (!source) {
   const info = require('./package.json');
   console.log(`
@@ -21,7 +22,7 @@ ${' '.repeat(info.description.length)
 } else {
   const fs = require('fs');
   const path = require('path');
-  let dest = process.argv[3];
+  let dest = argv.filter(arg => !/^-/.test(arg))[3];
   source = path.resolve(process.cwd(), source);
   fs.stat(source, (err, stat) => {
     if (err) throw err;

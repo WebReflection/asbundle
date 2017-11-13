@@ -32,6 +32,7 @@ const defaultOptions = {
 
 const fs = require('fs');
 const path = require('path');
+const CGJS = process.argv.some(arg => arg === '--cgjs');
 const IMPORT = 'require.I';
 const EXPORT = 'require.E(exports)';
 const bundle = (main, options) => {
@@ -67,6 +68,12 @@ ${code}
 }
 `.trim()).join(',')}]));
   `.trim();
+  if (CGJS) {
+    output = output.replace(
+      'cache[i] || get(i)',
+      'typeof i === "string" ? window.require(i) : (cache[i] || get(i))'
+    );
+  }
   if (output.includes('require.E(exports)')) {
     output = output.replace(
       'var main =',
@@ -115,12 +122,11 @@ const parse = (options, base, file, cache, modules) => {
             modules[cache.length - 1] = `module.exports = ${JSON.stringify(require(name))};`;
           }
         }
-      } else {
+      } else if (!/^[A-Z]/.test(module.value)) {
         process.chdir(base);
         const name = require.resolve(module.value);
-        if (name === module.value)
-          throw `unable to find "${name}" via file://${file}\n`;
-        addChunk(module, name);
+        if (name !== module.value) addChunk(module, name);
+        else if (!CGJS) throw `unable to find "${name}" via file://${file}\n`;
       }
     } else {
       for (let key in item) {
