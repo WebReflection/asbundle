@@ -77,13 +77,13 @@ ${code}
   if (output.includes('require.E(exports)')) {
     output = output.replace(
       'var main =',
-      'require.E = exports => Object.defineProperty(exports, \'__esModule\', {value: true});\n  var main ='
+      'require.E = function (exports) { return Object.defineProperty(exports, \'__esModule\', {value: true}); };\n  var main ='
     );
   }
   if (output.includes(IMPORT)) {
     output = output.replace(
       'var main =',
-      IMPORT + ' = m => m.__esModule ? m.default : m;\n  var main ='
+      IMPORT + ' = function (m) { return m.__esModule ? m.default : m; };\n  var main ='
     ).replace(
       'var main = require(0);\n  return main.__esModule ? main.default : main;',
       'return require.I(require(0));'

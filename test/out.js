@@ -5,8 +5,8 @@
     modules[i].call(exports, window, require, module, exports);
     return (cache[i] = module.exports);
   }
-  require.E = exports => Object.defineProperty(exports, '__esModule', {value: true});
-  require.I = m => m.__esModule ? m.default : m;
+  require.E = function (exports) { return Object.defineProperty(exports, '__esModule', {value: true}); };
+  require.I = function (m) { return m.__esModule ? m.default : m; };
   return require.I(require(0));
 }([],[function (global, require, module, exports) {
 // main.js
