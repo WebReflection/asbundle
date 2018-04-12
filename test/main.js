@@ -4,3 +4,5 @@ export default function test() {
   console.log('asbundle');
 };
 export {func, val};
+require('m1');
+require('m2');

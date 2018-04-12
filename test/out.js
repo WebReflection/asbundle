@@ -20,6 +20,8 @@ function test() {
 require.E(exports).default = test;
 exports.func = func;
 exports.val = val;
+(null);
+(null);
 },function (global, require, module, exports) {
 // module.js
 'use strict';

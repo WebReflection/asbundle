@@ -5,7 +5,7 @@
   "bin": "bin.js",
   "main": "index.js",
   "scripts": {
-    "test": "if [ \"$(node bin.js test/main.js)\" != \"$(cat test/out.js)\" ]; then exit 1; fi"
+    "test": "if [ \"$(node bin.js test/main.js --ignore=m1,m2)\" != \"$(cat test/out.js)\" ]; then exit 1; fi"
   },
   "repository": {
     "type": "git",

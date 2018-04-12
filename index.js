@@ -33,6 +33,9 @@ const defaultOptions = {
 const fs = require('fs');
 const path = require('path');
 const CGJS = process.argv.some(arg => arg === '--cgjs');
+const IGNORE = process.argv.filter(arg => /^--ignore=/.test(arg))
+                            .map(arr => arr.slice(9).split(','))[0] || [];
+
 const IMPORT = 'require.I';
 const EXPORT = 'require.E(exports)';
 const bundle = (main, options) => {
@@ -111,22 +114,35 @@ const parse = (options, base, file, cache, modules) => {
   const findRequire = item => {
     if (item.type === 'CallExpression' && item.callee.name === 'require') {
       const module = item.arguments[0];
-      if (/^[./]/.test(module.value)) {
-        const name = require.resolve(path.resolve(base, module.value));
-        if (/\.m?js$/.test(name)) addChunk(module, name);
-        else {
-          const i = cache.indexOf(name);
-          if (i < 0) cache.push(name);
-          addChunk(module, name);
-          if (i < 0) {
-            modules[cache.length - 1] = `module.exports = ${JSON.stringify(require(name))};`;
+      if (IGNORE.indexOf(module.value) < 0) {
+        if (/^[./]/.test(module.value)) {
+          const name = require.resolve(path.resolve(base, module.value));
+          if (/\.m?js$/.test(name)) addChunk(module, name);
+          else {
+            const i = cache.indexOf(name);
+            if (i < 0) cache.push(name);
+            addChunk(module, name);
+            if (i < 0) {
+              modules[cache.length - 1] = `module.exports = ${JSON.stringify(require(name))};`;
+            }
           }
+        } else if (!/^[A-Z]/.test(module.value)) {
+          process.chdir(base);
+          const name = require.resolve(module.value);
+          if (name !== module.value) addChunk(module, name);
+          else if (!CGJS) throw `unable to find "${name}" via file://${file}\n`;
         }
-      } else if (!/^[A-Z]/.test(module.value)) {
-        process.chdir(base);
-        const name = require.resolve(module.value);
-        if (name !== module.value) addChunk(module, name);
-        else if (!CGJS) throw `unable to find "${name}" via file://${file}\n`;
+      } else {
+        chunks.push({
+          start: item.callee.start,
+          end: item.callee.end,
+          value: ''
+        },
+        {
+          start: module.start,
+          end: module.end,
+          value: 'null'
+        });
       }
     } else {
       for (let key in item) {
