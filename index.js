@@ -116,7 +116,13 @@ const parse = (options, base, file, cache, modules) => {
       const module = item.arguments[0];
       if (IGNORE.indexOf(module.value) < 0) {
         if (/^[./]/.test(module.value)) {
-          const name = require.resolve(path.resolve(base, module.value));
+          let name
+          try {
+            name = require.resolve(path.resolve(base, module.value));
+          } catch (e) {
+            process.stderr.write('Error resolving ' + module.value + ' from ' + base + ': ' + e.message)
+            throw e
+          }
           if (/\.m?js$/.test(name)) addChunk(module, name);
           else {
             const i = cache.indexOf(name);
