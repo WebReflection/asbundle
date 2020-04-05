@@ -24,12 +24,14 @@ ${' '.repeat(info.description.length)
   const path = require('path');
   let dest = argv.filter(arg => !/^-/.test(arg))[3];
   source = path.resolve(process.cwd(), source);
+  if (dest) {
+    dest = path.resolve(process.cwd(), dest)
+  }
   fs.stat(source, (err, stat) => {
     if (err) throw err;
     if (!stat.isFile()) throw `unknown file ${source}`;
     const result = asbundle(source);
     if (dest) {
-      dest = path.resolve(process.cwd(), dest);
       fs.writeFileSync(dest, result);
     }
     else process.stdout.write(result);
